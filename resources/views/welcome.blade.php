@@ -10,7 +10,11 @@
 <div class="container">
     <div class="row justify-content-md-center">
 
+
         <div class="col-md-auto gy-5">
+            <div class="alert alert-danger d-none" id="notification" role="alert">
+                A simple danger alert—check it out!
+            </div>
             <form action="" method="post" id="product-form">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Product Name</label>
@@ -24,6 +28,8 @@
                     <label for="exampleInputPassword1" class="form-label">Price Per Item</label>
                     <input type="number" step=".01"  class="form-control" name="price" id="exampleInputPassword1">
                 </div>
+
+
 
                 <button type="submit" id="submit-btn" class="btn btn-primary">Submit</button>
                 <button id="cancel-btn" class="btn btn-danger d-none">Cancel</button>

@@ -32,10 +32,10 @@ $( function () {
 
     $("#product-form").on("submit",function (e) {
         e.preventDefault();
-        const $this = $(this);
         axios.post('/api/product', document.querySelector('#product-form'), {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             }
         }).then(function({data}){
             if(data.data.product_id){
@@ -45,7 +45,9 @@ $( function () {
             }
             updateTotal()
             resetForm()
-            console.log(data)
+        }).catch(function({response}){
+            $("#notification").text(response.data.message).removeClass("d-none")
+
         })
 
     })
@@ -60,6 +62,7 @@ function resetForm(){
     productForm.find("#cancel-btn").addClass("d-none")
     productForm.find("#submit-btn").text("Submit")
     productForm.find("input[name=product_id]").remove()
+    $("#notification").addClass("d-none")
 }
 
 function updateTable({data}){
@@ -71,8 +74,6 @@ function updateTable({data}){
     productRow.find(".product-price").text(data.price)
     productRow.find(".total-value").text(data.total_value)
 
-    console.log(productRow.find(".product_name"))
-    console.log(data.name)
 }
 
 function addToTable({data}){
