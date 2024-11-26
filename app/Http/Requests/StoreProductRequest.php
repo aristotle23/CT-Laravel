@@ -24,7 +24,9 @@ class StoreProductRequest extends FormRequest
         return [
             "name" => ["required"],
             "quantity" => ["required","numeric"],
-            "price" => ["required","decimal:0,2"]
+            "price" => ["required","decimal:0,2"],
+            "product_id" => [ "numeric"]
+
         ];
     }
 }

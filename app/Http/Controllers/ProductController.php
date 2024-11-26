@@ -23,7 +23,7 @@ class ProductController extends Controller
     }
     public function store(StoreProductRequest $request)
     {
-        $this->productServices->store($request->only(["name","quantity","price"]));
+        $this->productServices->store($request->except("_token"));
         return Redirect::to('/');
     }
 }

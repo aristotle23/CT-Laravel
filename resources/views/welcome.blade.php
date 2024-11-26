@@ -13,7 +13,6 @@
         <div class="col-md-auto gy-5">
             <form action="{{route("product.store")}}" method="post" id="product-form">
                 @csrf
-                <input type="hidden" name="product_id">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Product Name</label>
                     <input type="text" class="form-control" name="name" id="exampleInputEmail1" aria-describedby="emailHelp" required>
@@ -27,7 +26,7 @@
                     <input type="number" step=".01"  class="form-control" name="price" id="exampleInputPassword1">
                 </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" id="submit-btn" class="btn btn-primary">Submit</button>
                 <button id="cancel-btn" class="btn btn-danger d-none">Cancel</button>
             </form>
         </div>
@@ -69,7 +68,6 @@
             </table>
 
         </div>
-
     </div>
 
 </div>
