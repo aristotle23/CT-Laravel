@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\services\ProductServices;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
@@ -21,9 +18,13 @@ class ProductController extends Controller
         return view("welcome",$this->productServices->index());
 
     }
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request): JsonResponse
     {
-        $this->productServices->store($request->except("_token"));
-        return Redirect::to('/');
+        $product = $this->productServices->store($request->all());
+        return response()->json([
+            "status" => true,
+            "message" => "Product stored successfully",
+            "data" => $product
+        ],201);
     }
 }

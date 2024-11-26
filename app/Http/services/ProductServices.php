@@ -17,17 +17,15 @@ class ProductServices
 
     public function index(): array
     {
-        $fileExists = Storage::disk("local")->exists($this->fileName);
-        $products = $fileExists ? $this->getFileProducts() : $this->writeProductsToFile(collect([]));
+        $products = $this->getFileProducts();
         $total = $products->sum("total_value");
         return ["products" => $products->sortByDesc("date_time"),"total" => $total];
     }
 
-    public function store(array $request): void
+    public function store(array $request): mixed
     {
         if(!empty($request["product_id"])) {
-            $this->editProduct($request);
-            return;
+            return $this->editProduct($request);
         }
         $products = $this->getFileProducts();
         $request["id"] = $this->incrementId($products);
@@ -35,19 +33,27 @@ class ProductServices
         $request["total_value"] = $request["quantity"] * $request["price"];
         $products->push($request);
         $this->writeProductsToFile($products);
+        return $request;
     }
-    public  function editProduct(array $request): void {
+    public  function editProduct(array $request): mixed {
         $products = $this->getFileProducts();
-        $editedProducts = $products->map(function ($item, int $key) use($request){
-            if($item->id == $request["product_id"]){
-                $item->name =  $request["name"];
-                $item->quantity = $request["quantity"];
-                $item->price = $request["price"];
-                $item->total_value = $request["quantity"] * $request["price"];
-            }
-            return $item;
+
+        $index = $products->search(function($item , int $key) use($request){
+            return $item->id == $request["product_id"];
         });
-        $this->writeProductsToFile($editedProducts);
+
+        $item = $products[$index];
+        $item->name =  $request["name"];
+        $item->quantity = $request["quantity"];
+        $item->price = $request["price"];
+        $item->total_value = $request["quantity"] * $request["price"];
+        $item->product_id = $request["product_id"];
+
+        $products[$index] = $item;
+
+        $this->writeProductsToFile($products);
+
+        return $item;
     }
 
     private function incrementId(Collection $products): int
@@ -59,9 +65,12 @@ class ProductServices
 
     private function getFileProducts(): Collection
     {
-        $path = Storage::disk("local")->path($this->fileName);
-        $products = json_decode(File::get($path));
-        return collect($products);
+        $products = collect();
+        if(Storage::disk("local")->exists($this->fileName)){
+            $path = Storage::disk("local")->path($this->fileName);
+            $products = collect(json_decode(File::get($path)));
+        }
+        return $products;
     }
 
     private function writeProductsToFile(Collection $products): Collection
