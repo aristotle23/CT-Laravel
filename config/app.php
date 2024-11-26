@@ -28,6 +28,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'file_name' => env("FILE_NAME", 'products.json'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
